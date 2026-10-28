@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Aurelia — Aplikasi Wedding Planner & Keuangan Pernikahan</title>
+
+  <!-- PWA Fullstack Meta Tags -->
+  <meta name="theme-color" content="#23201E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aurelia">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Aurelia Wedding Planner">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#FAF7F2',
+            champagne: '#F3ECE1',
+            gold: {
+              light: '#DFC69E',
+              DEFAULT: '#C5A059',
+              dark: '#9E7B3B'
+            },
+            sage: {
+              light: '#E6ECE8',
+              DEFAULT: '#5C7465',
+              dark: '#3A4D41'
+            },
+            charcoal: '#23201E',
+            blush: '#F4E6E4'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          boxShadow: {
+            'luxury': '0 16px 40px rgba(35, 32, 30, 0.06)',
+            'gold-glow': '0 10px 25px rgba(197, 160, 89, 0.3)',
+            'bottom-nav': '0 -8px 30px rgba(35, 32, 30, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF7F2;
+      color: #23201E;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #FAF7F2;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #D5C7B2;
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C5A059;
+    }
+
+    /* Hide scrollbar for horizontal pill lists on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Range Slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      background: #E5DEC9;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -6px;
+      background-color: #C5A059;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      border: 3px solid #FAF7F2;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+  </style>
+</head>
+
+<body class="antialiased selection:bg-gold/20 selection:text-charcoal min-h-screen flex flex-col lg:flex-row">
+
+  <!-- ==========================================
+         DESKTOP SIDEBAR NAVIGATION (Visible on Web lg+)
+         ========================================== -->
+  <aside
+    class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-charcoal text-ivory border-r border-gold/20 z-30 select-none">
+    <!-- Brand Header -->
+    <div class="p-6 border-b border-white/10 flex items-center gap-3.5">
+      <div
+        class="w-11 h-11 rounded-2xl bg-gold text-white flex items-center justify-center font-serif text-2xl italic shadow-gold-glow">
+        A
+      </div>
+      <div>
+        <span class="font-serif text-2xl font-semibold tracking-tight text-white block leading-none">Aurelia &
+          Co.</span>
+        <span class="text-[10px] uppercase tracking-[0.22em] text-gold-light block mt-1">Wedding SuperApp</span>
+      </div>
+    </div>
+
+    <!-- Couple Mini Profile Card -->
+    <div class="p-5 mx-4 mt-5 rounded-2xl bg-white/5 border border-white/10">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] uppercase tracking-widest text-gold-light font-semibold">Pasangan Pengantin</span>
+        <button onclick="openCoupleModal()" class="text-xs text-stone-400 hover:text-white transition"
+          title="Ubah Profil">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+      </div>
+      <h2 id="sidebarCoupleName" class="font-serif text-xl font-semibold text-white mt-1">Calon Pengantin</h2>
+      <p id="sidebarWeddingDate" class="text-xs text-stone-300 mt-0.5"><i
+          class="fa-regular fa-calendar text-gold mr-1.5"></i>Tanggal Belum Ditentukan</p>
+      <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+        <span class="text-stone-400">Hitung Mundur:</span>
+        <span id="sidebarCountdown" class="bg-gold/20 text-gold-light px-2.5 py-0.5 rounded-full font-semibold">-</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="flex-1 px-4 py-6 space-y-1.5">
+      <button onclick="switchTab('dashboard')" id="desk-nav-dashboard"
+        class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all bg-gold text-white shadow-gold-glow">
+        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+        <span>Dashboard Utama</span>
+      </button>
+      <button onclick="switchTab('keuangan')" id="desk-nav-keuangan"
+        class="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium text-stone-300 hover:bg-white/10 hover:text-white transition-all">
+        <div class="flex items-center gap-3.5">
+          <i class="fa-solid fa-wallet w-5 text-center"></i>
+          <span>Pemasukan & Pengeluaran</span>
+        </div>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-semibold">Kas</span>
+      </button>
+      <button onclick="switchTab('vendor')" id="desk-nav-vendor"
+        class="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium text-stone-300 hover:bg-white/10 hover:text-white transition-all">
+        <div class="flex items-center gap-3.5">
+          <i class="fa-solid fa-handshake-simple w-5 text-center"></i>
+          <span>List Vendor & Tagihan</span>
+        </div>
+        <span id="deskVendorBadge" class="text-[10px] bg-gold/20 text-gold-light px-2 py-0.5 rounded-full font-semibold">0</span>
+      </button>
+      <button onclick="switchTab('checklist')" id="desk-nav-checklist"
+        class="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium text-stone-300 hover:bg-white/10 hover:text-white transition-all">
+        <div class="flex items-center gap-3.5">
+          <i class="fa-solid fa-list-check w-5 text-center"></i>
+          <span>Checklist & Timeline</span>
+        </div>
+        <span id="deskChecklistBadge" class="text-[10px] bg-white/10 text-stone-200 px-2 py-0.5 rounded-full">0%</span>
+      </button>
+      <button onclick="switchTab('berkas')" id="desk-nav-berkas"
+        class="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium text-stone-300 hover:bg-white/10 hover:text-white transition-all">
+        <div class="flex items-center gap-3.5">
+          <i class="fa-solid fa-file-shield w-5 text-center"></i>
+          <span>Perlengkapan Berkas KUA</span>
+        </div>
+        <span id="deskKuaBadge"
+          class="text-[10px] bg-gold/20 text-gold-light px-2 py-0.5 rounded-full font-semibold">0%</span>
+      </button>
+    </nav>
+
+    <!-- Quick CTA Add Transaction Desktop -->
+    <div class="p-4 border-t border-white/10 space-y-2.5">
+      <button onclick="openTransactionModal('income')"
+        class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold uppercase tracking-wider transition flex items-center justify-center gap-2 shadow">
+        <i class="fa-solid fa-circle-plus"></i>
+        <span>Input Pemasukan</span>
+      </button>
+      <button onclick="openTransactionModal('expense')"
+        class="w-full py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold uppercase tracking-wider transition flex items-center justify-center gap-2 shadow">
+        <i class="fa-solid fa-circle-minus"></i>
+        <span>Input Pengeluaran</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================
+         MOBILE STICKY APP HEADER (Visible on HP/Tablet < lg)
+         ========================================== -->
+  <header class="lg:hidden sticky top-0 z-30 bg-charcoal text-white px-4 py-3.5 shadow-md border-b border-gold/25">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-9 h-9 rounded-xl bg-gold text-white flex items-center justify-center font-serif text-lg italic font-bold shadow">
+          A
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="mobileCoupleName" class="font-serif text-lg font-semibold leading-none text-white">Calon Pengantin
+            </h1>
+            <button onclick="openCoupleModal()" class="text-gold-light text-xs" aria-label="Edit Profil">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+          <p id="mobileCountdownText" class="text-[11px] text-gold-light mt-0.5">Tanggal Belum Ditentukan • -</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons on Mobile Top Right -->
+      <div class="flex items-center gap-2">
+        <button onclick="copyFinancialReport()"
+          class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-gold-light flex items-center justify-center text-sm transition"
+          title="Salin Laporan">
+          <i class="fa-solid fa-share-nodes"></i>
+        </button>
+        <button onclick="openCoupleModal()"
+          class="px-3 py-1.5 rounded-xl bg-gold/20 border border-gold/40 text-gold-light text-xs font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-Sliders"></i>
+          <span>Target</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+         MAIN CONTENT AREA (Works on Mobile & Desktop)
+         ========================================== -->
+  <main class="flex-1 lg:ml-72 pb-28 lg:pb-12">
+
+    <!-- Top Desktop Utility Bar -->
+    <div
+      class="hidden lg:flex items-center justify-between px-8 py-5 bg-white/80 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-20">
+      <div>
+        <h1 id="pageHeaderTitle" class="font-serif text-2xl font-bold text-charcoal">Dashboard Perencanaan & Keuangan
+        </h1>
+        <p id="pageHeaderSubtitle" class="text-xs text-stone-500">Pantau kesiapan acara, pemasukan tabungan, dan
+          pengeluaran vendor secara real-time.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="copyFinancialReport()"
+          class="px-4 py-2.5 rounded-xl bg-champagne hover:bg-gold/20 text-charcoal text-xs font-semibold transition flex items-center gap-2 border border-gold/30">
+          <i class="fa-regular fa-copy text-gold-dark"></i>
+          <span>Salin Laporan WhatsApp</span>
+        </button>
+        <button onclick="openCoupleModal()"
+          class="px-4 py-2.5 rounded-xl bg-white hover:bg-stone-100 text-charcoal text-xs font-semibold transition flex items-center gap-2 border border-stone-200">
+          <i class="fa-solid fa-gear text-stone-500"></i>
+          <span>Atur Target Budget</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 lg:pt-8">
+
+      <!-- ==========================================
+                 TAB 1: DASHBOARD RINGKASAN (HOME)
+                 ========================================== -->
+      <section id="view-dashboard" class="tab-view space-y-6 animate-fade">
+
+        <!-- Quick Mobile Welcome & Quick Input Banner -->
+        <div
+          class="bg-gradient-to-br from-charcoal via-stone-900 to-charcoal text-white rounded-3xl p-5 sm:p-7 shadow-luxury border border-gold/30 relative overflow-hidden">
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-gold/15 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div>
+              <span
+                class="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-gold/20 text-gold-light px-3 py-1 rounded-full font-semibold border border-gold/30">
+                <i class="fa-solid fa-coins"></i> Saldo Kas Pernikahan Saat Ini
+              </span>
+              <h2 id="dashNetBalance" class="font-serif text-3xl sm:text-5xl font-bold text-white mt-2">Rp 0</h2>
+              <p class="text-xs text-stone-300 mt-1">
+                Target Total Anggaran Pernikahan: <strong id="dashTargetBudget" class="text-gold-light">Rp 0</strong>
+                <button onclick="openCoupleModal()"
+                  class="underline ml-1.5 text-gold-light hover:text-white">Ubah</button>
+              </p>
+            </div>
+
+            <!-- Fast Action Buttons (Mobile & Web) -->
+            <div class="grid grid-cols-2 sm:flex items-center gap-2.5">
+              <button onclick="openTransactionModal('income')"
+                class="px-4 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-solid fa-arrow-down-long rotate-45"></i>
+                <span>+ Pemasukan</span>
+              </button>
+              <button onclick="openTransactionModal('expense')"
+                class="px-4 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-solid fa-arrow-up-long rotate-45"></i>
+                <span>- Pengeluaran</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress Bar Dana Terkumpul vs Target -->
+          <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-stone-300">Dana Masuk vs Target Anggaran</span>
+                <span id="dashIncomePercent" class="font-bold text-emerald-400">0%</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div id="dashIncomeBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%">
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-stone-300">Pengeluaran Terpakai dari Target</span>
+                <span id="dashExpensePercent" class="font-bold text-rose-400">0%</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div id="dashExpenseBar" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Metric Cards: Total Pemasukan, Total Pengeluaran, Sisa Belum Terbayar/Alokasi -->
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
+          <!-- Pemasukan Card -->
+          <div onclick="switchTab('keuangan'); filterTransactions('income');"
+            class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-500/20 shadow-luxury cursor-pointer hover:border-emerald-500 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">Total Pemasukan</span>
+              <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+              </div>
+            </div>
+            <p id="cardTotalIncome" class="font-serif text-xl sm:text-3xl font-bold text-emerald-700 mt-2">Rp 0</p>
+            <p id="cardIncomeCount" class="text-[11px] text-stone-500 mt-1">0 sumber dana masuk</p>
+          </div>
+
+          <!-- Pengeluaran Card -->
+          <div onclick="switchTab('keuangan'); filterTransactions('expense');"
+            class="bg-white p-4 sm:p-5 rounded-2xl border border-rose-500/20 shadow-luxury cursor-pointer hover:border-rose-500 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">Total Pengeluaran</span>
+              <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-arrow-trend-down"></i>
+              </div>
+            </div>
+            <p id="cardTotalExpense" class="font-serif text-xl sm:text-3xl font-bold text-rose-700 mt-2">Rp 0</p>
+            <p id="cardExpenseCount" class="text-[11px] text-stone-500 mt-1">0 transaksi keluar</p>
+          </div>
+
+          <!-- Sisa Anggaran Card -->
+          <div class="col-span-2 lg:col-span-1 bg-white p-4 sm:p-5 rounded-2xl border border-gold/25 shadow-luxury">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">Sisa Kuota Target
+                Budget</span>
+              <div class="w-8 h-8 rounded-xl bg-champagne text-gold-dark flex items-center justify-center text-xs">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+            </div>
+            <p id="cardRemainingTarget" class="font-serif text-xl sm:text-3xl font-bold text-charcoal mt-2">Rp 0</p>
+            <p id="cardRemainingNote" class="text-[11px] text-stone-500 mt-1">Selisih Target Anggaran & Pengeluaran</p>
+          </div>
+        </div>
+
+        <!-- Two Column Section: Category Breakdown & Recent Transactions -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+          <!-- Left: Expense Breakdown by Category (5 Cols) -->
+          <div
+            class="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 border border-gold/20 shadow-luxury flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-serif text-xl font-bold text-charcoal">Alokasi Pengeluaran</h3>
+                  <p class="text-xs text-stone-500">Rincian biaya per kategori vendor</p>
+                </div>
+                <span class="w-9 h-9 rounded-xl bg-champagne text-gold-dark flex items-center justify-center text-sm">
+                  <i class="fa-solid fa-chart-Simple"></i>
+                </span>
+              </div>
+
+              <div id="categoryBreakdownList" class="space-y-3.5 mt-4">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <button onclick="switchTab('keuangan')"
+              class="mt-6 w-full py-3 rounded-xl bg-ivory hover:bg-champagne text-charcoal text-xs font-semibold transition border border-stone-200">
+              Lihat Buku Kas Lengkap &rarr;
+            </button>
+          </div>
+
+          <!-- Right: Recent Transactions List (7 Cols) -->
+          <div
+            class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 border border-gold/20 shadow-luxury flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-serif text-xl font-bold text-charcoal">Transaksi Terbaru</h3>
+                  <p class="text-xs text-stone-500">Catatan pemasukan & pengeluaran terakhir</p>
+                </div>
+                <button onclick="openTransactionModal('expense')"
+                  class="text-xs font-semibold text-gold-dark hover:underline flex items-center gap-1">
+                  <i class="fa-solid fa-plus"></i> Tambah Baru
+                </button>
+              </div>
+
+              <div id="recentTransactionsList" class="space-y-2.5">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
+              <span class="text-stone-500">Ingin mencatat tabungan atau cicilan vendor?</span>
+              <button onclick="switchTab('keuangan')" class="font-semibold text-gold-dark hover:underline">Buka Semua
+                Transaksi &rarr;</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================================
+                 TAB 2: BUKU KAS PEMASUKAN & PENGELUARAN
+                 ========================================== -->
+      <section id="view-keuangan" style="display: none;" class="tab-view space-y-6 animate-fade">
+
+        <!-- Top Action & Summary Strip -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-gold/25 shadow-luxury">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-200/80">
+            <div>
+              <span class="text-[10px] uppercase tracking-widest text-gold-dark font-bold">Buku Kas Pernikahan</span>
+              <h2 class="font-serif text-2xl sm:text-3xl font-bold text-charcoal">Catatan Pemasukan & Pengeluaran</h2>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button onclick="openTransactionModal('income')"
+                class="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow">
+                <i class="fa-solid fa-plus"></i>
+                <span>Input Pemasukan</span>
+              </button>
+              <button onclick="openTransactionModal('expense')"
+                class="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow">
+                <i class="fa-solid fa-minus"></i>
+                <span>Input Pengeluaran</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mini Summary Strip -->
+          <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-4 text-center sm:text-left">
+            <div class="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/60">
+              <p class="text-[10px] uppercase text-emerald-700 font-semibold">Pemasukan (+)</p>
+              <p id="ledgerIncomeTotal" class="font-serif text-base sm:text-2xl font-bold text-emerald-700 mt-0.5">Rp 0
+              </p>
+            </div>
+            <div class="p-3 rounded-2xl bg-rose-50/70 border border-rose-200/60">
+              <p class="text-[10px] uppercase text-rose-700 font-semibold">Pengeluaran (-)</p>
+              <p id="ledgerExpenseTotal" class="font-serif text-base sm:text-2xl font-bold text-rose-700 mt-0.5">Rp 0
+              </p>
+            </div>
+            <div class="p-3 rounded-2xl bg-champagne/60 border border-gold/30">
+              <p class="text-[10px] uppercase text-charcoal font-semibold">Saldo Kas Bersih</p>
+              <p id="ledgerNetTotal" class="font-serif text-base sm:text-2xl font-bold text-charcoal mt-0.5">Rp 0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <!-- Filter Pills (Horizontal Scroll on Mobile) -->
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <button onclick="filterTransactions('all')" id="flt-all"
+              class="tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-charcoal text-white transition">
+              Semua Transaksi
+            </button>
+            <button onclick="filterTransactions('income')" id="flt-income"
+              class="tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50 transition">
+              <i class="fa-solid fa-arrow-down mr-1"></i>Pemasukan Saja
+            </button>
+            <button onclick="filterTransactions('expense')" id="flt-expense"
+              class="tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-rose-700 border border-rose-200 hover:bg-rose-50 transition">
+              <i class="fa-solid fa-arrow-up mr-1"></i>Pengeluaran Saja
+            </button>
+          </div>
+
+          <!-- Search & Category Filter -->
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1 sm:w-56">
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-xs"></i>
+              <input type="text" id="txSearchInput" oninput="renderTransactions()"
+                placeholder="Cari vendor / catatan..."
+                class="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-stone-200 text-xs focus:outline-none focus:border-gold">
+            </div>
+            <select id="txCategoryFilter" onchange="renderTransactions()"
+              class="px-3 py-2 rounded-xl bg-white border border-stone-200 text-xs focus:outline-none focus:border-gold">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Tabungan Bersama">Tabungan Bersama</option>
+              <option value="Kontribusi Keluarga">Kontribusi Keluarga</option>
+              <option value="Venue & Katering">Venue & Katering</option>
+              <option value="Dekorasi & Florist">Dekorasi & Florist</option>
+              <option value="MUA & Busana">MUA & Busana</option>
+              <option value="Foto & Video">Foto & Video</option>
+              <option value="WO & Hiburan">WO & Hiburan</option>
+              <option value="Cincin & Seserahan">Cincin & Seserahan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Transaction List Container -->
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-gold/20 shadow-luxury">
+          <div id="fullTransactionsList" class="divide-y divide-stone-100">
+            <!-- Dynamically rendered via JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+                 TAB: LIST VENDOR & PEMBAYARAN
+                 ========================================== -->
+      <section id="view-vendor" style="display: none;" class="tab-view space-y-6 animate-fade">
+
+        <!-- Top Vendor Summary Card -->
+        <div class="bg-gradient-to-br from-charcoal via-stone-900 to-charcoal text-white rounded-3xl p-5 sm:p-7 shadow-luxury border border-gold/30 relative overflow-hidden">
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-gold/15 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+            <div>
+              <span class="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-gold/20 text-gold-light px-3 py-1 rounded-full font-semibold border border-gold/30">
+                <i class="fa-solid fa-handshake-simple"></i> Pengelolaan Vendor & Tagihan
+              </span>
+              <h2 class="font-serif text-2xl sm:text-3xl font-bold text-white mt-2">Status Pembayaran Vendor</h2>
+              <p class="text-xs text-stone-300 mt-1">Pantau harga estimasi kontrak, riwayat DP/cicilan, dan persentase pelunasan setiap vendor.</p>
+            </div>
+            <button onclick="openVendorModal()" class="px-5 py-3 rounded-2xl bg-gold hover:bg-gold-light text-charcoal font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-gold-glow shrink-0">
+              <i class="fa-solid fa-plus"></i>
+              <span>Tambah Vendor Baru</span>
+            </button>
+          </div>
+
+          <!-- 3 Stats Columns -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-6 pt-5 border-t border-white/10">
+            <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-[10px] uppercase tracking-wider text-stone-400 block font-medium">Total Estimasi Kontrak</span>
+              <p id="vendorTotalContract" class="font-serif text-xl sm:text-2xl font-bold text-white mt-1">Rp 0</p>
+              <span id="vendorCountText" class="text-[11px] text-stone-400 mt-0.5 block">0 vendor terdaftar</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white/5 border border-emerald-500/30">
+              <span class="text-[10px] uppercase tracking-wider text-emerald-400 block font-medium">Total Sudah Terbayar</span>
+              <p id="vendorTotalPaid" class="font-serif text-xl sm:text-2xl font-bold text-emerald-400 mt-1">Rp 0</p>
+              <span id="vendorPaidPercentText" class="text-[11px] text-emerald-300/80 mt-0.5 block">0% terbayar</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white/5 border border-rose-500/30">
+              <span class="text-[10px] uppercase tracking-wider text-rose-300 block font-medium">Sisa Tagihan Belum Lunas</span>
+              <p id="vendorTotalRemaining" class="font-serif text-xl sm:text-2xl font-bold text-rose-400 mt-1">Rp 0</p>
+              <span id="vendorRemainingCountText" class="text-[11px] text-stone-400 mt-0.5 block">0 vendor belum lunas</span>
+            </div>
+          </div>
+
+          <!-- Overall Vendor Payment Progress Stick -->
+          <div class="mt-5 pt-4 border-t border-white/10">
+            <div class="flex justify-between items-center text-xs mb-1.5">
+              <span class="text-stone-300 font-medium">Stik Progres Pelunasan Vendor Keseluruhan</span>
+              <span id="vendorOverallProgressLabel" class="font-bold text-gold-light">0%</span>
+            </div>
+            <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/10">
+              <div id="vendorOverallProgressBar" class="h-full bg-gradient-to-r from-gold via-amber-400 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Pills & Search -->
+        <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <button onclick="filterVendors('all')" id="flt-vnd-all" class="vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-charcoal text-white transition">
+              Semua Vendor
+            </button>
+            <button onclick="filterVendors('belum')" id="flt-vnd-belum" class="vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition">
+              Belum Bayar
+            </button>
+            <button onclick="filterVendors('dp')" id="flt-vnd-dp" class="vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-amber-700 border border-amber-200 hover:bg-amber-50 transition">
+              DP / Dicicil
+            </button>
+            <button onclick="filterVendors('lunas')" id="flt-vnd-lunas" class="vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50 transition">
+              Lunas (100%)
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1 sm:w-56">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-xs"></i>
+              <input type="text" id="vendorSearchInput" oninput="renderVendors()" placeholder="Cari nama vendor..."
+                class="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-stone-200 text-xs focus:outline-none focus:border-gold">
+            </div>
+            <button onclick="openVendorModal()" class="sm:hidden px-3.5 py-2 rounded-xl bg-gold text-charcoal font-bold text-xs flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-plus"></i>
+              <span>Vendor</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Vendor Cards Grid Container -->
+        <div id="vendorCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+                 TAB 3: CHECKLIST & TIMELINE PERSIAPAN
+                 ========================================== -->
+      <section id="view-checklist" style="display: none;" class="tab-view space-y-6 animate-fade">
+
+        <!-- Readiness Header Card -->
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border border-gold/25 shadow-luxury">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <span class="text-[10px] uppercase tracking-widest text-gold-dark font-bold">Wedding Timeline</span>
+              <h2 class="font-serif text-2xl sm:text-3xl font-bold text-charcoal">Daftar Tugas & Persiapan Hari-H</h2>
+              <p id="checklistStatusText" class="text-xs text-stone-500 mt-0.5">Centang tahapan yang sudah diselesaikan
+                bersama pasangan.</p>
+            </div>
+            <div class="text-left sm:text-right">
+              <span id="checklistPercentBig" class="font-serif text-4xl font-bold text-gold-dark">0%</span>
+              <span class="text-xs text-stone-400 block">Selesai</span>
+            </div>
+          </div>
+
+          <div class="w-full h-3 bg-champagne rounded-full overflow-hidden">
+            <div id="checklistBarBig" class="h-full bg-gradient-to-r from-gold to-sage transition-all duration-500"
+              style="width: 0%"></div>
+          </div>
+
+          <!-- Add New Checklist Task Form -->
+          <form onsubmit="addChecklistTask(event)"
+            class="mt-5 pt-5 border-t border-stone-100 flex flex-col sm:flex-row gap-2.5">
+            <input type="text" id="newTaskTitle" required
+              placeholder="Tambah tugas baru (cth: Urus berkas KUA / Fitting Jas)..."
+              class="flex-1 px-4 py-2.5 rounded-xl bg-ivory border border-stone-200 text-xs focus:outline-none focus:border-gold">
+            <select id="newTaskTimeline"
+              class="px-3.5 py-2.5 rounded-xl bg-ivory border border-stone-200 text-xs focus:outline-none focus:border-gold">
+              <option value="H-12 Bln">H-12 Bulan</option>
+              <option value="H-9 Bln">H-9 Bulan</option>
+              <option value="H-6 Bln">H-6 Bulan</option>
+              <option value="H-3 Bln">H-3 Bulan</option>
+              <option value="H-1 Bln">H-1 Bulan</option>
+              <option value="H-7 Hari">H-7 Hari</option>
+            </select>
+            <button type="submit"
+              class="px-5 py-2.5 rounded-xl bg-charcoal hover:bg-gold text-white text-xs font-semibold transition shrink-0">
+              <i class="fa-solid fa-plus mr-1"></i> Tambah Tugas
+            </button>
+          </form>
+        </div>
+
+        <!-- Checklist Items Container -->
+        <div id="checklistItemsWrapper" class="space-y-2.5">
+          <!-- Rendered via JS -->
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+                 TAB 4: PERLENGKAPAN BERKAS NIKAH KUA
+                 ========================================== -->
+      <section id="view-berkas" style="display: none;" class="tab-view space-y-6 animate-fade">
+
+        <!-- KUA Header Banner & Progress Summary -->
+        <div
+          class="bg-gradient-to-br from-charcoal via-stone-900 to-charcoal text-white rounded-3xl p-5 sm:p-7 shadow-luxury border border-gold/30 relative overflow-hidden">
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-gold/15 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div>
+              <span
+                class="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-gold/20 text-gold-light px-3 py-1 rounded-full font-semibold border border-gold/30">
+                <i class="fa-solid fa-file-shield"></i> Administrasi Akad & Kemenag
+              </span>
+              <h2 class="font-serif text-2xl sm:text-4xl font-bold text-white mt-2">Perlengkapan Berkas KUA</h2>
+              <p class="text-xs text-stone-300 mt-1 max-w-xl">
+                Checklist dokumen resmi syarat pendaftaran nikah untuk Calon Pengantin Pria (CPP), Calon Pengantin
+                Wanita (CPW), serta Wali & Saksi.
+              </p>
+            </div>
+
+            <!-- Right CTA: Copy to WhatsApp -->
+            <div class="shrink-0">
+              <button onclick="copyKuaDocsWhatsApp()"
+                class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span>Salin Checklist ke WA</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress Bar Berkas Siap -->
+          <div class="mt-6 pt-5 border-t border-white/10">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="text-stone-300">Kelengkapan Dokumen: <strong id="kuaCountReady" class="text-white">0</strong>
+                / <strong id="kuaCountTotal" class="text-white">14</strong> Berkas Siap</span>
+              <span id="kuaPercent" class="font-bold text-gold-light">0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+              <div id="kuaProgressBar" class="bg-gold h-full transition-all duration-500 rounded-full"
+                style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Category Pills -->
+        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          <button onclick="filterKuaDocs('all')" id="kua-flt-all"
+            class="kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-charcoal text-white shadow transition flex items-center gap-2">
+            <i class="fa-solid fa-folder-open"></i> Semua Dokumen (14)
+          </button>
+          <button onclick="filterKuaDocs('cpp')" id="kua-flt-cpp"
+            class="kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-200 hover:border-gold transition flex items-center gap-2">
+            <i class="fa-solid fa-user-tie text-blue-600"></i> Mempelai Pria (CPP)
+          </button>
+          <button onclick="filterKuaDocs('cpw')" id="kua-flt-cpw"
+            class="kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-200 hover:border-gold transition flex items-center gap-2">
+            <i class="fa-solid fa-person-dress text-pink-600"></i> Mempelai Wanita (CPW)
+          </button>
+          <button onclick="filterKuaDocs('wali')" id="kua-flt-wali"
+            class="kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-200 hover:border-gold transition flex items-center gap-2">
+            <i class="fa-solid fa-users text-emerald-600"></i> Wali & Saksi
+          </button>
+        </div>
+
+        <!-- Interactive Document List Grid -->
+        <div id="kuaDocsList" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Populated dynamically by renderKuaDocs() -->
+        </div>
+
+        <!-- Official KUA Guidelines & Tariff Information -->
+        <div class="bg-white rounded-3xl p-5 sm:p-7 border border-stone-200/80 shadow-luxury space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gold/15 text-gold-dark flex items-center justify-center text-lg">
+              <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div>
+              <h3 class="font-serif text-lg font-bold text-charcoal">Ketentuan & Tarif Resmi KUA (Kemenag)</h3>
+              <p class="text-xs text-stone-500">Peraturan Pemerintah (PP) No. 48 Tahun 2014 & PMA No. 20 Tahun 2019</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+            <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-800 block">Akad di Kantor
+                KUA</span>
+              <p class="font-serif text-2xl font-bold text-emerald-700 mt-1">Rp 0 (GRATIS)</p>
+              <p class="text-[11px] text-emerald-900/80 mt-1">Berlaku pada hari kerja (Senin - Jumat) di balai nikah
+                kantor KUA setempat.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-amber-800 block">Akad di Luar KUA /
+                Libur</span>
+              <p class="font-serif text-2xl font-bold text-amber-700 mt-1">Rp 600.000</p>
+              <p class="text-[11px] text-amber-900/80 mt-1">Disetor langsung via Bank/Simkah (PNBP Kas Negara), bukan
+                diserahkan tunai ke penghulu.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-stone-600 block">Batas Waktu
+                Pendaftaran</span>
+              <p class="font-serif text-2xl font-bold text-charcoal mt-1">H-10 Hari Kerja</p>
+              <p class="text-[11px] text-stone-500 mt-1">Pendaftaran kurang dari 10 hari kerja memerlukan Surat
+                Dispensasi dari Camat setempat.</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================
+         MOBILE BOTTOM NAVIGATION BAR (App-like feel on HP < lg)
+         ========================================== -->
+  <nav
+    class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-bottom-nav px-2 py-1.5 flex items-center justify-around select-none">
+    <button onclick="switchTab('dashboard')" id="mob-nav-dashboard"
+      class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-gold-dark font-semibold transition">
+      <i class="fa-solid fa-chart-pie text-lg"></i>
+      <span class="text-[10px] mt-0.5">Ringkasan</span>
+    </button>
+
+    <button onclick="switchTab('keuangan')" id="mob-nav-keuangan"
+      class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-charcoal transition">
+      <i class="fa-solid fa-wallet text-lg"></i>
+      <span class="text-[10px] mt-0.5">Buku Kas</span>
+    </button>
+
+    <button onclick="switchTab('vendor')" id="mob-nav-vendor"
+      class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-charcoal transition">
+      <i class="fa-solid fa-handshake-simple text-lg"></i>
+      <span class="text-[10px] mt-0.5">Vendor</span>
+    </button>
+
+    <button onclick="switchTab('checklist')" id="mob-nav-checklist"
+      class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-charcoal transition">
+      <i class="fa-solid fa-list-check text-lg"></i>
+      <span class="text-[10px] mt-0.5">Checklist</span>
+    </button>
+
+    <button onclick="switchTab('berkas')" id="mob-nav-berkas"
+      class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-charcoal transition">
+      <i class="fa-solid fa-file-shield text-lg"></i>
+      <span class="text-[10px] mt-0.5">Berkas KUA</span>
+    </button>
+  </nav>
+
+  <!-- Mobile Floating Quick Action Button -->
+  <div class="lg:hidden fixed bottom-20 right-4 z-40">
+    <button onclick="openTransactionModal('expense')"
+      class="w-13 h-13 rounded-full bg-charcoal hover:bg-gold text-gold-light hover:text-white shadow-gold-glow border-2 border-gold/40 flex items-center justify-center text-lg p-3.5 transition transform active:scale-95 shadow-xl"
+      aria-label="Tambah Transaksi">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- ==========================================
+         MODAL 1: INPUT PEMASUKAN & PENGELUARAN
+         ========================================== -->
+  <div id="transactionModal" style="display: none;"
+    class="fixed inset-0 z-50 bg-charcoal/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div
+      class="bg-ivory rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-gold/40 shadow-2xl relative animate-fade max-h-[92vh] overflow-y-auto">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-stone-200">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-gold-dark font-bold">Pencatatan Keuangan</span>
+          <h3 id="txModalTitle" class="font-serif text-2xl font-bold text-charcoal">Tambah Transaksi Baru</h3>
+        </div>
+        <button onclick="closeTransactionModal()"
+          class="w-9 h-9 rounded-full bg-champagne text-charcoal hover:bg-gold hover:text-white transition flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="transactionForm" onsubmit="saveTransaction(event)" class="space-y-4 mt-4">
+        <input type="hidden" id="txEditId" value="">
+
+        <!-- Toggle Tipe: Pemasukan vs Pengeluaran -->
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1.5">Jenis Transaksi *</label>
+          <div class="grid grid-cols-2 gap-2.5 p-1 bg-stone-200/70 rounded-2xl">
+            <button type="button" id="btnTypeIncome" onclick="setModalTxType('income')"
+              class="py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-600 text-white shadow">
+              <i class="fa-solid fa-circle-plus"></i>
+              <span>Pemasukan (+)</span>
+            </button>
+            <button type="button" id="btnTypeExpense" onclick="setModalTxType('expense')"
+              class="py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-stone-600 hover:text-charcoal">
+              <i class="fa-solid fa-circle-minus"></i>
+              <span>Pengeluaran (-)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Nama / Keterangan Transaksi -->
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Keterangan / Nama Item *</label>
+          <input type="text" id="txTitle" required placeholder="Cth: Tabungan Gaji / DP Gedung & Katering"
+            class="w-full text-xs sm:text-sm px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+
+        <!-- Nominal Rupiah + Quick Chips -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-semibold text-charcoal">Nominal (Rp) *</label>
+            <span id="txAmountFormattedPreview" class="text-xs font-bold text-gold-dark">Rp 0</span>
+          </div>
+          <input type="number" id="txAmount" required min="1000" step="any" oninput="updateAmountPreview()"
+            placeholder="Masukkan angka, cth: 15000000"
+            class="w-full text-sm font-semibold px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+
+          <!-- Quick Nominal Chips for Easy Mobile Input -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="setQuickAmount(1000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+1
+              Juta</button>
+            <button type="button" onclick="setQuickAmount(5000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+5
+              Juta</button>
+            <button type="button" onclick="setQuickAmount(10000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+10
+              Juta</button>
+            <button type="button" onclick="setQuickAmount(25000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+25
+              Juta</button>
+          </div>
+        </div>
+
+        <!-- Kategori & Status Pembayaran -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Kategori *</label>
+            <select id="txCategory"
+              class="w-full text-xs sm:text-sm px-3.5 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+              <!-- Options dynamically updated based on Income/Expense -->
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Status / Metode</label>
+            <select id="txStatus"
+              class="w-full text-xs sm:text-sm px-3.5 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+              <option value="Lunas / Diterima">Lunas / Dana Diterima</option>
+              <option value="DP (Down Payment)">DP (Uang Muka)</option>
+              <option value="Cicilan Vendor">Cicilan Vendor</option>
+              <option value="Rencana / Belum Bayar">Rencana / Belum Bayar</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tanggal & Catatan -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Tanggal Transaksi</label>
+            <input type="date" id="txDate" required
+              class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Catatan Tambahan</label>
+            <input type="text" id="txNotes" placeholder="Cth: Transfer BCA ke Vendor..."
+              class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+          </div>
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeTransactionModal()"
+            class="w-1/3 py-3.5 rounded-xl border border-stone-300 text-xs font-semibold text-stone-600 hover:bg-stone-100 transition">
+            Batal
+          </button>
+          <button type="submit" id="txSubmitBtn"
+            class="w-2/3 py-3.5 rounded-xl bg-charcoal hover:bg-gold text-white text-xs uppercase tracking-widest font-semibold transition shadow-md">
+            Simpan Transaksi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+         MODAL 2: PENGATURAN PROFIL PASANGAN & TARGET BUDGET
+         ========================================== -->
+  <div id="coupleModal" style="display: none;"
+    class="fixed inset-0 z-50 bg-charcoal/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-ivory rounded-3xl max-w-md w-full p-6 border border-gold/40 shadow-2xl relative animate-fade">
+      <button onclick="closeCoupleModal()"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-champagne text-charcoal flex items-center justify-center">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <span class="text-[10px] uppercase tracking-widest text-gold-dark font-bold">Pengaturan Aplikasi</span>
+      <h3 class="font-serif text-2xl font-bold text-charcoal mt-1">Profil & Target Anggaran</h3>
+
+      <form onsubmit="saveCoupleSettings(event)" class="space-y-4 mt-5">
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Nama Pasangan</label>
+          <input type="text" id="setCoupleName" required
+            class="w-full text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Tanggal Pernikahan (Hari-H)</label>
+          <input type="date" id="setWeddingDate" required
+            class="w-full text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Target Total Budget Pernikahan (Rp)</label>
+          <input type="number" id="setTargetBudget" required min="1000000" step="1000000"
+            class="w-full text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+        <button type="submit"
+          class="w-full py-3.5 rounded-xl bg-charcoal hover:bg-gold text-white text-xs uppercase tracking-widest font-semibold transition shadow">
+          Simpan Perubahan
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+         MODAL 3: TAMBAH & EDIT VENDOR
+         ========================================== -->
+  <div id="vendorModal" style="display: none;"
+    class="fixed inset-0 z-50 bg-charcoal/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div
+      class="bg-ivory rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-gold/40 shadow-2xl relative animate-fade max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-200">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-gold-dark font-bold">Pengelolaan Vendor</span>
+          <h3 id="vendorModalTitle" class="font-serif text-2xl font-bold text-charcoal">Tambah Vendor Baru</h3>
+        </div>
+        <button onclick="closeVendorModal()"
+          class="w-9 h-9 rounded-full bg-champagne text-charcoal hover:bg-gold hover:text-white transition flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="vendorForm" onsubmit="saveVendor(event)" class="space-y-4 mt-4">
+        <input type="hidden" id="vendorEditId" value="">
+
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Nama Vendor / Penyedia Jasa *</label>
+          <input type="text" id="vendorName" required placeholder="Cth: Samudra Ballroom / Rumah Kampung Decor"
+            class="w-full text-xs sm:text-sm px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Kategori Layanan *</label>
+            <select id="vendorCategory" required
+              class="w-full text-xs sm:text-sm px-3.5 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+              <option value="Venue & Katering">Venue & Katering</option>
+              <option value="Dekorasi & Florist">Dekorasi & Florist</option>
+              <option value="MUA & Busana">MUA & Busana</option>
+              <option value="Foto & Video">Foto & Video</option>
+              <option value="WO & Hiburan">WO & Hiburan</option>
+              <option value="Cincin & Seserahan">Cincin & Seserahan</option>
+              <option value="Undangan & Souvenir">Undangan & Souvenir</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Kontak WhatsApp / Telp</label>
+            <input type="tel" id="vendorContact" placeholder="Cth: 08123456789"
+              class="w-full text-xs sm:text-sm px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-semibold text-charcoal">Estimasi Harga Kontrak (Rp) *</label>
+            <span id="vendorContractPreview" class="text-xs font-bold text-gold-dark">Rp 0</span>
+          </div>
+          <input type="number" id="vendorContractAmount" required min="1000" step="any" oninput="updateVendorPreview()"
+            placeholder="Total biaya kontrak dengan vendor"
+            class="w-full text-sm font-semibold px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Catatan Tambahan / Paket</label>
+          <input type="text" id="vendorNotes" placeholder="Cth: Termasuk 500 porsi buffet, akad + resepsi"
+            class="w-full text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeVendorModal()"
+            class="w-1/3 py-3.5 rounded-xl border border-stone-300 text-xs font-semibold text-stone-600 hover:bg-stone-100 transition">
+            Batal
+          </button>
+          <button type="submit" id="vendorSubmitBtn"
+            class="w-2/3 py-3.5 rounded-xl bg-charcoal hover:bg-gold text-white text-xs uppercase tracking-widest font-semibold transition shadow-md">
+            Simpan Vendor
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+         MODAL 4: BAYAR DP / CICILAN VENDOR
+         ========================================== -->
+  <div id="vendorPayModal" style="display: none;"
+    class="fixed inset-0 z-50 bg-charcoal/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div
+      class="bg-ivory rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-7 border border-gold/40 shadow-2xl relative animate-fade max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-200">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-emerald-800 font-bold">Pembayaran Vendor</span>
+          <h3 class="font-serif text-2xl font-bold text-charcoal">Bayar DP / Cicilan</h3>
+        </div>
+        <button onclick="closeVendorPayModal()"
+          class="w-9 h-9 rounded-full bg-champagne text-charcoal hover:bg-gold hover:text-white transition flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Vendor Balance Summary Banner -->
+      <div class="my-4 p-4 rounded-2xl bg-white border border-gold/30 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span id="payModalVendorName" class="font-serif text-base font-bold text-charcoal">Nama Vendor</span>
+          <span id="payModalCategoryBadge" class="text-[10px] font-semibold bg-stone-100 text-stone-700 px-2 py-0.5 rounded-full">Kategori</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-stone-100 text-center">
+          <div>
+            <span class="text-[9px] uppercase tracking-wider text-stone-400 block">Estimasi Kontrak</span>
+            <span id="payModalContract" class="text-xs font-bold text-charcoal block">Rp 0</span>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase tracking-wider text-emerald-600 block">Sudah Dibayar</span>
+            <span id="payModalPaid" class="text-xs font-bold text-emerald-700 block">Rp 0</span>
+          </div>
+          <div>
+            <span class="text-[9px] uppercase tracking-wider text-rose-500 block">Sisa Tagihan</span>
+            <span id="payModalRemaining" class="text-xs font-bold text-rose-600 block">Rp 0</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="vendorPayForm" onsubmit="submitVendorPayment(event)" class="space-y-4">
+        <input type="hidden" id="payModalVendorId" value="">
+
+        <div>
+          <label class="text-xs font-semibold text-charcoal block mb-1">Tahap Pembayaran *</label>
+          <select id="payModalType" required
+            class="w-full text-xs sm:text-sm px-3.5 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+            <option value="DP (Down Payment)">DP (Uang Muka Awal)</option>
+            <option value="Cicilan Ke-1">Cicilan Ke-1</option>
+            <option value="Cicilan Ke-2">Cicilan Ke-2</option>
+            <option value="Pelunasan">Pelunasan Akhir (100%)</option>
+            <option value="Pembayaran Bertahap">Pembayaran Bertahap</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-semibold text-charcoal">Nominal Pembayaran (Rp) *</label>
+            <span id="payModalAmountPreview" class="text-xs font-bold text-emerald-700">Rp 0</span>
+          </div>
+          <input type="number" id="payModalAmount" required min="1000" step="any" oninput="updatePayModalPreview()"
+            placeholder="Masukkan nominal yang akan dibayar"
+            class="w-full text-sm font-semibold px-4 py-3 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+
+          <!-- Quick Chips -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="setPayQuickAmount('full')"
+              class="text-[11px] bg-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-800 px-2.5 py-1 rounded-lg font-bold transition">Lunasi Sisa (100%)</button>
+            <button type="button" onclick="setPayQuickAmount('half')"
+              class="text-[11px] bg-amber-100 hover:bg-amber-600 hover:text-white text-amber-800 px-2.5 py-1 rounded-lg font-bold transition">50% Sisa</button>
+            <button type="button" onclick="setPayQuickAmount(1000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+1 Juta</button>
+            <button type="button" onclick="setPayQuickAmount(5000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+5 Juta</button>
+            <button type="button" onclick="setPayQuickAmount(10000000)"
+              class="text-[11px] bg-champagne hover:bg-gold hover:text-white px-2.5 py-1 rounded-lg font-medium transition">+10 Juta</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Tanggal Pembayaran</label>
+            <input type="date" id="payModalDate" required
+              class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-charcoal block mb-1">Catatan Pembayaran</label>
+            <input type="text" id="payModalNotes" placeholder="Cth: Transfer via BCA..."
+              class="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white focus:outline-none focus:border-gold">
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200/70 text-[11px] text-amber-900 flex items-start gap-2">
+          <i class="fa-solid fa-circle-info text-amber-700 mt-0.5"></i>
+          <span>Pembayaran ini otomatis dicatat sebagai transaksi <strong>Pengeluaran Kas</strong> dan memperbarui stik persentase vendor.</span>
+        </div>
+
+        <div class="pt-2 flex gap-2.5">
+          <button type="button" onclick="closeVendorPayModal()"
+            class="w-1/3 py-3.5 rounded-xl border border-stone-300 text-xs font-semibold text-stone-600 hover:bg-stone-100 transition">
+            Batal
+          </button>
+          <button type="submit" id="payModalSubmitBtn"
+            class="w-2/3 py-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs uppercase tracking-widest font-semibold transition shadow-md flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i>
+            <span>Simpan Pembayaran</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CUSTOM TOAST NOTIFICATION -->
+  <div id="toastNotification" style="display: none;"
+    class="fixed top-4 right-4 z-50 bg-charcoal text-white px-4 py-3.5 rounded-2xl shadow-2xl border border-gold/40 flex items-center gap-3 max-w-xs sm:max-w-sm animate-fade">
+    <div class="w-7 h-7 rounded-full bg-gold text-white flex items-center justify-center shrink-0 text-xs">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div>
+      <p id="toastTitle" class="text-xs font-bold text-gold-light">Berhasil!</p>
+      <p id="toastMessage" class="text-[11px] text-stone-200 mt-0.5"></p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+         APPLICATION LOGIC (JAVASCRIPT)
+         ========================================== -->
+  <script>
+    /* --- 1. STATE DATA IN-MEMORY --- */
+    let appState = {
+      coupleName: 'Calon Pengantin',
+      weddingDate: '',
+      targetBudget: 0,
+      currentFilter: 'all',
+      modalTxType: 'expense',
+      transactions: [],
+      checklist: [],
+      vendors: [],
+      vendorFilter: 'all',
+      kuaFilter: 'all',
+      kuaDocs: []
+    };
+
+    const incomeCategories = [
+      'Tabungan Bersama',
+      'Dana Mempelai Pria',
+      'Dana Mempelai Wanita',
+      'Kontribusi Keluarga',
+      'Investasi / Bonus',
+      'Lainnya'
+    ];
+
+    const expenseCategories = [
+      'Venue & Katering',
+      'Dekorasi & Florist',
+      'MUA & Busana',
+      'Foto & Video',
+      'WO & Hiburan',
+      'Cincin & Seserahan',
+      'Undangan & Souvenir',
+      'Lainnya'
+    ];
+
+    /* --- 2. HELPER FUNCTIONS & RPC BRIDGE --- */
+    function formatIDR(num) {
+      const prefix = num < 0 ? '-Rp ' : 'Rp ';
+      return prefix + Math.abs(Math.round(num)).toLocaleString('id-ID');
+    }
+
+    function showToast(title, message) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3500);
+    }
+
+    /* Universal RPC Caller: GAS Hybrid Pattern */
+    async function callBackend(action, ...params) {
+      /* 1. Native Google Apps Script Web App */
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        return new Promise((resolve, reject) => {
+          if (typeof google.script.run[action] !== 'function') {
+            return reject(new Error('Fungsi ' + action + ' tidak ditemukan di backend GAS.'));
+          }
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)[action](...params);
+        });
+      }
+
+      /* 2. Fallback to Vercel Serverless Proxy / Standalone REST API */
+      try {
+        const query = '?action=' + encodeURIComponent(action) + '&params=' + encodeURIComponent(JSON.stringify(params));
+        const res = await fetch('/api/gas' + query);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({ message: res.statusText }));
+          throw new Error(errData.message || 'API Proxy Error');
+        }
+        return await res.json();
+      } catch (err) {
+        console.warn('Backend call fallback warning for ' + action + ':', err);
+        return null;
+      }
+    }
+
+    /* LocalStorage Offline Caching Helpers */
+    function saveOfflineState() {
+      try {
+        localStorage.setItem('aurelia_offline_state', JSON.stringify({
+          coupleName: appState.coupleName,
+          weddingDate: appState.weddingDate,
+          targetBudget: appState.targetBudget,
+          transactions: appState.transactions,
+          checklist: appState.checklist,
+          vendors: appState.vendors
+        }));
+      } catch (e) {}
+    }
+
+    function loadOfflineState() {
+      try {
+        const raw = localStorage.getItem('aurelia_offline_state');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.coupleName) appState.coupleName = parsed.coupleName;
+          if (parsed.weddingDate) appState.weddingDate = parsed.weddingDate;
+          if (parsed.targetBudget) appState.targetBudget = parsed.targetBudget;
+          if (Array.isArray(parsed.transactions) && parsed.transactions.length > 0) appState.transactions = parsed.transactions;
+          if (Array.isArray(parsed.checklist) && parsed.checklist.length > 0) appState.checklist = parsed.checklist;
+          if (Array.isArray(parsed.vendors) && parsed.vendors.length > 0) appState.vendors = parsed.vendors;
+        }
+      } catch (e) {}
+    }
+
+    /* --- 3. NAVIGATION TABS (MOBILE & DESKTOP) --- */
+    function switchTab(tabKey) {
+      /* Hide all views */
+      document.querySelectorAll('.tab-view').forEach(el => {
+        el.style.display = 'none';
+      });
+      const targetView = document.getElementById(`view-${tabKey}`);
+      if (targetView) {
+        targetView.style.display = 'block';
+      }
+
+      /* Update Desktop Sidebar Buttons */
+      const deskTabs = ['dashboard', 'keuangan', 'vendor', 'checklist', 'berkas'];
+      deskTabs.forEach(t => {
+        const btn = document.getElementById(`desk-nav-${t}`);
+        if (!btn) return;
+        if (t === tabKey) {
+          btn.className = 'w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all bg-gold text-white shadow-gold-glow';
+        } else {
+          btn.className = 'w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium text-stone-300 hover:bg-white/10 hover:text-white transition-all';
+        }
+      });
+
+      /* Update Mobile Bottom Nav Buttons */
+      deskTabs.forEach(t => {
+        const mobBtn = document.getElementById(`mob-nav-${t}`);
+        if (!mobBtn) return;
+        if (t === tabKey) {
+          mobBtn.className = 'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-gold-dark font-bold transition';
+        } else {
+          mobBtn.className = 'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-charcoal transition';
+        }
+      });
+
+      /* Update Desktop Header Title */
+      const headers = {
+        dashboard: ['Dashboard Perencanaan & Keuangan', 'Pantau kesiapan acara, pemasukan tabungan, dan pengeluaran vendor secara real-time.'],
+        keuangan: ['Buku Kas: Pemasukan & Pengeluaran', 'Catat setiap dana masuk dan pembayaran DP/pelunasan vendor pernikahan Anda.'],
+        vendor: ['List Vendor & Pembayaran', 'Pantau kontrak vendor, estimasi biaya, pembayaran DP/cicilan, dan persentase pelunasan.'],
+        checklist: ['Checklist & Timeline Persiapan', 'Kelola daftar tugas menuju hari bahagia agar tidak ada detail yang terlewat.'],
+        berkas: ['Perlengkapan Berkas KUA', 'Panduan dan checklist dokumen syarat nikah Calon Suami (CPP), Calon Istri (CPW), serta Wali & Saksi.']
+      };
+      if (headers[tabKey]) {
+        document.getElementById('pageHeaderTitle').textContent = headers[tabKey][0];
+        document.getElementById('pageHeaderSubtitle').textContent = headers[tabKey][1];
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* --- 4. RENDER DASHBOARD & FINANCIAL CALCULATIONS --- */
+    function renderAll() {
+      updateProfileHeader();
+      renderFinancialSummary();
+      renderTransactions();
+      renderChecklist();
+      renderVendors();
+    }
+
+    function updateProfileHeader() {
+      const today = new Date();
+      let diffDaysText = '-';
+      let dateStr = 'Belum ditentukan';
+      if (appState.weddingDate) {
+        const wedding = new Date(appState.weddingDate);
+        if (!isNaN(wedding.getTime())) {
+          const diffDays = Math.max(0, Math.ceil((wedding - today) / (1000 * 60 * 60 * 24)));
+          dateStr = wedding.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          diffDaysText = `${diffDays} Hari Lagi`;
+        }
+      }
+
+      document.getElementById('sidebarCoupleName').textContent = appState.coupleName || 'Calon Pengantin';
+      document.getElementById('mobileCoupleName').textContent = appState.coupleName || 'Calon Pengantin';
+      document.getElementById('sidebarWeddingDate').innerHTML = `<i class="fa-regular fa-calendar text-gold mr-1.5"></i>${dateStr}`;
+      document.getElementById('sidebarCountdown').textContent = diffDaysText;
+      document.getElementById('mobileCountdownText').textContent = `${dateStr} • ${diffDaysText}`;
+      document.getElementById('dashTargetBudget').textContent = formatIDR(appState.targetBudget || 0);
+    }
+
+    function renderFinancialSummary() {
+      let totalIncome = 0;
+      let totalExpense = 0;
+      let incomeCount = 0;
+      let expenseCount = 0;
+      const categoryTotals = {};
+
+      appState.transactions.forEach(tx => {
+        if (tx.type === 'income') {
+          totalIncome += tx.amount;
+          incomeCount++;
+        } else {
+          totalExpense += tx.amount;
+          expenseCount++;
+          categoryTotals[tx.category] = (categoryTotals[tx.category] || 0) + tx.amount;
+        }
+      });
+
+      const netBalance = totalIncome - totalExpense;
+      const target = appState.targetBudget || 0;
+      const remainingTarget = Math.max(0, target - totalExpense);
+
+      /* Update Dashboard Numbers */
+      document.getElementById('dashNetBalance').textContent = formatIDR(netBalance);
+      document.getElementById('cardTotalIncome').textContent = formatIDR(totalIncome);
+      document.getElementById('cardIncomeCount').textContent = `${incomeCount} transaksi dana masuk`;
+      document.getElementById('cardTotalExpense').textContent = formatIDR(totalExpense);
+      document.getElementById('cardExpenseCount').textContent = `${expenseCount} transaksi pengeluaran`;
+      document.getElementById('cardRemainingTarget').textContent = formatIDR(remainingTarget);
+
+      /* Progress Bars against Target Budget */
+      const incPct = target > 0 ? Math.min(100, Math.round((totalIncome / target) * 100)) : 0;
+      const expPct = target > 0 ? Math.min(100, Math.round((totalExpense / target) * 100)) : 0;
+      document.getElementById('dashIncomePercent').textContent = `${incPct}%`;
+      document.getElementById('dashIncomeBar').style.width = `${incPct}%`;
+      document.getElementById('dashExpensePercent').textContent = `${expPct}%`;
+      document.getElementById('dashExpenseBar').style.width = `${expPct}%`;
+
+      /* Update Ledger Tab Totals */
+      document.getElementById('ledgerIncomeTotal').textContent = formatIDR(totalIncome);
+      document.getElementById('ledgerExpenseTotal').textContent = formatIDR(totalExpense);
+      document.getElementById('ledgerNetTotal').textContent = formatIDR(netBalance);
+
+      /* Render Category Breakdown on Dashboard */
+      const breakdownEl = document.getElementById('categoryBreakdownList');
+      const sortedCats = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+
+      if (sortedCats.length === 0) {
+        breakdownEl.innerHTML = `<p class="text-xs text-stone-400 py-4 text-center">Belum ada data pengeluaran.</p>`;
+      } else {
+        breakdownEl.innerHTML = sortedCats.map(([cat, amt]) => {
+          const pct = totalExpense > 0 ? Math.round((amt / totalExpense) * 100) : 0;
+          return `
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="font-semibold text-charcoal">${cat}</span>
+                                <span class="text-stone-600 font-medium">${formatIDR(amt)} <span class="text-stone-400">(${pct}%)</span></span>
+                            </div>
+                            <div class="w-full h-2 bg-champagne rounded-full overflow-hidden">
+                                <div class="bg-gold h-full rounded-full" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+        }).join('');
+      }
+
+      /* Render Top 4 Recent Transactions on Dashboard */
+      const recentEl = document.getElementById('recentTransactionsList');
+      const recentList = [...appState.transactions].slice(0, 4);
+      if (recentList.length === 0) {
+        recentEl.innerHTML = `<p class="text-xs text-stone-400 py-4 text-center">Belum ada transaksi tercatat.</p>`;
+      } else {
+        recentEl.innerHTML = recentList.map(tx => createTransactionRowHTML(tx, true)).join('');
+      }
+    }
+
+    function createTransactionRowHTML(tx, isCompact = false) {
+      const isIncome = tx.type === 'income';
+      const iconClass = isIncome ? 'fa-arrow-down-long rotate-45 text-emerald-700 bg-emerald-100' : 'fa-arrow-up-long rotate-45 text-rose-700 bg-rose-100';
+      const amountColor = isIncome ? 'text-emerald-700' : 'text-rose-700';
+      const sign = isIncome ? '+' : '-';
+      const formattedDate = new Date(tx.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      return `
+                <div class="flex items-center justify-between py-3 ${isCompact ? 'px-3 rounded-2xl bg-ivory/70 border border-stone-200/60' : 'px-2 hover:bg-ivory/50 rounded-xl'} transition gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xs ${iconClass}">
+                            <i class="fa-solid ${isIncome ? 'fa-plus' : 'fa-minus'}"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs sm:text-sm font-semibold text-charcoal truncate">${tx.title}</p>
+                            <div class="flex flex-wrap items-center gap-1.5 text-[10px] text-stone-500 mt-0.5">
+                                <span class="bg-champagne text-charcoal px-2 py-0.5 rounded-md font-medium">${tx.category}</span>
+                                <span>• ${formattedDate}</span>
+                                ${!isCompact && tx.status ? `<span>• <strong class="text-gold-dark">${tx.status}</strong></span>` : ''}
+                            </div>
+                            ${!isCompact && tx.notes ? `<p class="text-[11px] text-stone-400 mt-0.5 italic">"${tx.notes}"</p>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="text-right shrink-0 flex items-center gap-2">
+                        <div>
+                            <p class="text-xs sm:text-sm font-bold ${amountColor}">${sign} ${formatIDR(tx.amount)}</p>
+                            ${isCompact ? `<span class="text-[10px] text-stone-400">${tx.status}</span>` : ''}
+                        </div>
+                        ${!isCompact ? `
+                            <div class="flex items-center gap-1 ml-2">
+                                <button onclick="editTransaction('${tx.id}')" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-gold hover:text-white text-stone-600 flex items-center justify-center text-xs transition" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteTransaction('${tx.id}')" class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-rose-600 hover:text-white text-stone-600 flex items-center justify-center text-xs transition" title="Hapus">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+    }
+
+    /* --- 5. BUKU KAS FILTER & CRUD TRANSAKSI --- */
+    function filterTransactions(filterType) {
+      appState.currentFilter = filterType;
+
+      /* Update filter pill styles */
+      const btnAll = document.getElementById('flt-all');
+      const btnInc = document.getElementById('flt-income');
+      const btnExp = document.getElementById('flt-expense');
+
+      btnAll.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-200 transition';
+      btnInc.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-emerald-700 border border-emerald-200 transition';
+      btnExp.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-rose-700 border border-rose-200 transition';
+
+      if (filterType === 'all') {
+        btnAll.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-charcoal text-white shadow transition';
+      } else if (filterType === 'income') {
+        btnInc.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-emerald-600 text-white shadow transition';
+      } else if (filterType === 'expense') {
+        btnExp.className = 'tx-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-rose-600 text-white shadow transition';
+      }
+
+      renderTransactions();
+    }
+
+    function renderTransactions() {
+      const searchKeyword = (document.getElementById('txSearchInput')?.value || '').toLowerCase();
+      const catFilter = document.getElementById('txCategoryFilter')?.value || 'ALL';
+      const listEl = document.getElementById('fullTransactionsList');
+
+      const filtered = appState.transactions.filter(tx => {
+        const matchType = appState.currentFilter === 'all' || tx.type === appState.currentFilter;
+        const matchCat = catFilter === 'ALL' || tx.category === catFilter;
+        const matchSearch = tx.title.toLowerCase().includes(searchKeyword) ||
+          tx.category.toLowerCase().includes(searchKeyword) ||
+          (tx.notes && tx.notes.toLowerCase().includes(searchKeyword));
+        return matchType && matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+                    <div class="py-12 text-center space-y-3">
+                        <div class="w-12 h-12 rounded-full bg-champagne text-gold-dark flex items-center justify-center mx-auto text-lg">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-charcoal">Tidak ada transaksi ditemukan</p>
+                        <p class="text-xs text-stone-500">Silakan tambah pemasukan atau pengeluaran baru.</p>
+                    </div>
+                `;
+      } else {
+        listEl.innerHTML = filtered.map(tx => createTransactionRowHTML(tx, false)).join('');
+      }
+    }
+
+    function openTransactionModal(defaultType = 'expense') {
+      document.getElementById('txEditId').value = '';
+      document.getElementById('transactionForm').reset();
+      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('txAmountFormattedPreview').textContent = 'Rp 0';
+      document.getElementById('txModalTitle').textContent = 'Tambah Transaksi Baru';
+      setModalTxType(defaultType);
+      document.getElementById('transactionModal').style.display = 'flex';
+    }
+
+    function closeTransactionModal() {
+      document.getElementById('transactionModal').style.display = 'none';
+    }
+
+    function setModalTxType(type) {
+      appState.modalTxType = type;
+      const btnInc = document.getElementById('btnTypeIncome');
+      const btnExp = document.getElementById('btnTypeExpense');
+      const catSelect = document.getElementById('txCategory');
+
+      if (type === 'income') {
+        btnInc.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-600 text-white shadow';
+        btnExp.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-stone-600 hover:text-charcoal';
+        catSelect.innerHTML = incomeCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      } else {
+        btnExp.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-rose-600 text-white shadow';
+        btnInc.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-stone-600 hover:text-charcoal';
+        catSelect.innerHTML = expenseCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      }
+    }
+
+    function updateAmountPreview() {
+      const val = parseFloat(document.getElementById('txAmount').value) || 0;
+      document.getElementById('txAmountFormattedPreview').textContent = formatIDR(val);
+    }
+
+    function setQuickAmount(addVal) {
+      const input = document.getElementById('txAmount');
+      const current = parseFloat(input.value) || 0;
+      input.value = current + addVal;
+      updateAmountPreview();
+    }
+
+    function saveTransaction(e) {
+      e.preventDefault();
+      const editId = document.getElementById('txEditId').value;
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+      const category = document.getElementById('txCategory').value;
+      const status = document.getElementById('txStatus').value;
+      const date = document.getElementById('txDate').value;
+      const notes = document.getElementById('txNotes').value.trim();
+
+      if (editId) {
+        const idx = appState.transactions.findIndex(t => t.id === editId);
+        if (idx > -1) {
+          appState.transactions[idx] = {
+            ...appState.transactions[idx],
+            type: appState.modalTxType,
+            title, amount, category, status, date, notes
+          };
+          showToast('Transaksi Diperbarui!', `${title} berhasil diperbarui.`);
+          callBackend('apiSimpanTransaksi', appState.transactions[idx]);
+        }
+      } else {
+        const newTx = {
+          id: 'tx-' + Date.now(),
+          type: appState.modalTxType,
+          title, amount, category, status, date, notes
+        };
+        appState.transactions.unshift(newTx);
+        const label = appState.modalTxType === 'income' ? 'Pemasukan' : 'Pengeluaran';
+        showToast(`${label} Dicatat!`, `${title} (${formatIDR(amount)}) berhasil ditambahkan.`);
+        callBackend('apiSimpanTransaksi', newTx);
+      }
+
+      closeTransactionModal();
+      saveOfflineState();
+      renderAll();
+    }
+
+    function editTransaction(id) {
+      const tx = appState.transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      document.getElementById('txEditId').value = tx.id;
+      document.getElementById('txModalTitle').textContent = 'Edit Transaksi';
+      setModalTxType(tx.type);
+      document.getElementById('txTitle').value = tx.title;
+      document.getElementById('txAmount').value = tx.amount;
+      document.getElementById('txCategory').value = tx.category;
+      document.getElementById('txStatus').value = tx.status;
+      document.getElementById('txDate').value = tx.date;
+      document.getElementById('txNotes').value = tx.notes || '';
+      updateAmountPreview();
+
+      document.getElementById('transactionModal').style.display = 'flex';
+    }
+
+    function deleteTransaction(id) {
+      const tx = appState.transactions.find(t => t.id === id);
+      appState.transactions = appState.transactions.filter(t => t.id !== id);
+      saveOfflineState();
+      renderAll();
+      if (tx) {
+        showToast('Transaksi Dihapus', `Item "${tx.title}" telah dihapus dari buku kas.`);
+        callBackend('apiHapusTransaksi', id);
+      }
+    }
+
+    /* --- 6. EXPORT / COPY WHATSAPP FINANCIAL REPORT --- */
+    function copyFinancialReport() {
+      let inc = 0, exp = 0;
+      appState.transactions.forEach(t => {
+        if (t.type === 'income') inc += t.amount;
+        else exp += t.amount;
+      });
+      const net = inc - exp;
+
+      const reportText = [
+        `*LAPORAN KEUANGAN PERNIKAHAN (${appState.coupleName})*`,
+        `Tanggal Hari-H: ${appState.weddingDate}`,
+        `----------------------------------------`,
+        `• Total Pemasukan: ${formatIDR(inc)}`,
+        `• Total Pengeluaran: ${formatIDR(exp)}`,
+        `• *Saldo Kas Saat Ini: ${formatIDR(net)}*`,
+        `• Target Total Budget: ${formatIDR(appState.targetBudget)}`,
+        `----------------------------------------`,
+        `Dicatat melalui Aplikasi Aurelia Wedding Planner.`
+      ].join('\n');
+
+      const temp = document.createElement('textarea');
+      temp.value = reportText;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+
+      showToast('Laporan Tersalin!', 'Ringkasan kas siap ditempel (paste) ke chat WhatsApp pasangan Anda.');
+    }
+
+    /* --- 7. CHECKLIST MANAGEMENT --- */
+    function renderChecklist() {
+      const wrapper = document.getElementById('checklistItemsWrapper');
+      const total = appState.checklist.length;
+      const doneCount = appState.checklist.filter(c => c.done).length;
+      const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+
+      document.getElementById('checklistPercentBig').textContent = `${pct}%`;
+      document.getElementById('checklistBarBig').style.width = `${pct}%`;
+      document.getElementById('deskChecklistBadge').textContent = `${pct}%`;
+
+      if (total === 0) {
+        wrapper.innerHTML = `
+                    <div class="py-12 text-center space-y-3 bg-white rounded-2xl border border-stone-200/80">
+                        <div class="w-12 h-12 rounded-full bg-champagne text-gold-dark flex items-center justify-center mx-auto text-lg">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-charcoal">Belum ada tugas checklist</p>
+                        <p class="text-xs text-stone-500">Gunakan form di atas untuk menambahkan checklist persiapan pernikahan Anda.</p>
+                    </div>
+                `;
+        return;
+      }
+
+      wrapper.innerHTML = appState.checklist.map(item => `
+                <div class="flex items-center justify-between p-4 rounded-2xl bg-white border ${item.done ? 'border-sage/40 bg-sage-light/20' : 'border-stone-200/80'} shadow-sm transition">
+                    <label class="flex items-center gap-3.5 cursor-pointer flex-1">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklist('${item.id}')" class="accent-gold w-5 h-5 rounded cursor-pointer">
+                        <div>
+                            <p class="text-xs sm:text-sm font-semibold ${item.done ? 'line-through text-stone-400' : 'text-charcoal'}">${item.title}</p>
+                            <span class="text-[10px] uppercase tracking-wider text-gold-dark font-semibold">${item.timeline}</span>
+                        </div>
+                    </label>
+                    <button onclick="deleteChecklist('${item.id}')" class="w-8 h-8 rounded-xl text-stone-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center text-xs transition">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+    }
+
+    function toggleChecklist(id) {
+      const item = appState.checklist.find(c => c.id === id);
+      if (item) {
+        item.done = !item.done;
+        saveOfflineState();
+        renderChecklist();
+        callBackend('apiToggleChecklist', id, item.done);
+      }
+    }
+
+    function addChecklistTask(e) {
+      e.preventDefault();
+      const titleInput = document.getElementById('newTaskTitle');
+      const timelineSelect = document.getElementById('newTaskTimeline');
+      const title = titleInput.value.trim();
+      if (!title) return;
+
+      const newTask = {
+        id: 'ck-' + Date.now(),
+        title,
+        timeline: timelineSelect.value,
+        done: false
+      };
+      appState.checklist.push(newTask);
+      titleInput.value = '';
+      saveOfflineState();
+      renderChecklist();
+      showToast('Tugas Ditambahkan!', `"${title}" masuk ke daftar persiapan.`);
+      callBackend('apiSimpanChecklist', newTask);
+    }
+
+    function deleteChecklist(id) {
+      appState.checklist = appState.checklist.filter(c => c.id !== id);
+      saveOfflineState();
+      renderChecklist();
+      callBackend('apiHapusChecklist', id);
+    }
+
+    /* --- 8. VENDOR MANAGEMENT & PROGRESS STICK LOGIC --- */
+    function filterVendors(type) {
+      appState.vendorFilter = type;
+      const filters = ['all', 'belum', 'dp', 'lunas'];
+      filters.forEach(f => {
+        const btn = document.getElementById('flt-vnd-' + f);
+        if (!btn) return;
+        if (f === type) {
+          btn.className = 'vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-charcoal text-white transition';
+        } else {
+          btn.className = 'vnd-filter shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition';
+        }
+      });
+      renderVendors();
+    }
+
+    function renderVendors() {
+      const container = document.getElementById('vendorCardsContainer');
+      if (!container) return;
+
+      const vendors = appState.vendors || [];
+      let totalContract = 0;
+      let totalPaid = 0;
+      let unpaidCount = 0;
+
+      vendors.forEach(v => {
+        totalContract += (Number(v.contractAmount) || 0);
+        totalPaid += (Number(v.paidAmount) || 0);
+        if ((Number(v.paidAmount) || 0) < (Number(v.contractAmount) || 0)) {
+          unpaidCount++;
+        }
+      });
+
+      const totalRemaining = Math.max(0, totalContract - totalPaid);
+      const overallPct = totalContract > 0 ? Math.min(100, Math.round((totalPaid / totalContract) * 100)) : 0;
+
+      /* Update Summary Banner */
+      const elTotalContract = document.getElementById('vendorTotalContract');
+      if (elTotalContract) elTotalContract.textContent = formatIDR(totalContract);
+      const elCountText = document.getElementById('vendorCountText');
+      if (elCountText) elCountText.textContent = `${vendors.length} vendor terdaftar`;
+      const elTotalPaid = document.getElementById('vendorTotalPaid');
+      if (elTotalPaid) elTotalPaid.textContent = formatIDR(totalPaid);
+      const elPaidPctText = document.getElementById('vendorPaidPercentText');
+      if (elPaidPctText) elPaidPctText.textContent = `${overallPct}% terbayar`;
+      const elTotalRemaining = document.getElementById('vendorTotalRemaining');
+      if (elTotalRemaining) elTotalRemaining.textContent = formatIDR(totalRemaining);
+      const elRemainingCountText = document.getElementById('vendorRemainingCountText');
+      if (elRemainingCountText) elRemainingCountText.textContent = `${unpaidCount} vendor belum lunas`;
+      const elOverallLabel = document.getElementById('vendorOverallProgressLabel');
+      if (elOverallLabel) elOverallLabel.textContent = `${overallPct}% (${formatIDR(totalPaid)} / ${formatIDR(totalContract)})`;
+      const elOverallBar = document.getElementById('vendorOverallProgressBar');
+      if (elOverallBar) elOverallBar.style.width = `${overallPct}%`;
+      const elBadge = document.getElementById('deskVendorBadge');
+      if (elBadge) elBadge.textContent = `${vendors.length}`;
+
+      /* Filtering */
+      const search = (document.getElementById('vendorSearchInput')?.value || '').toLowerCase().trim();
+      const filtered = vendors.filter(v => {
+        const contract = Number(v.contractAmount) || 0;
+        const paid = Number(v.paidAmount) || 0;
+        let matchFilter = true;
+        if (appState.vendorFilter === 'belum') {
+          matchFilter = paid === 0;
+        } else if (appState.vendorFilter === 'dp') {
+          matchFilter = paid > 0 && paid < contract;
+        } else if (appState.vendorFilter === 'lunas') {
+          matchFilter = paid >= contract && contract > 0;
+        }
+
+        const matchSearch = !search ||
+          (v.name && v.name.toLowerCase().includes(search)) ||
+          (v.category && v.category.toLowerCase().includes(search)) ||
+          (v.notes && v.notes.toLowerCase().includes(search));
+
+        return matchFilter && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-gold/20 p-6 space-y-3">
+            <div class="w-14 h-14 rounded-full bg-champagne text-gold-dark flex items-center justify-center mx-auto text-xl">
+              <i class="fa-solid fa-handshake-simple"></i>
+            </div>
+            <h3 class="text-base font-serif font-bold text-charcoal">Belum Ada Vendor</h3>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">Mulai tambahkan vendor dan estimasi harga kontrak untuk memantau stik pembayaran DP dan cicilan Anda.</p>
+            <button onclick="openVendorModal()" class="mt-2 px-5 py-2.5 rounded-xl bg-gold hover:bg-gold-light text-charcoal text-xs font-bold uppercase tracking-wider transition shadow">
+              <i class="fa-solid fa-plus mr-1.5"></i>Tambah Vendor Baru
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(v => {
+        const contract = Number(v.contractAmount) || 0;
+        const paid = Number(v.paidAmount) || 0;
+        const remaining = Math.max(0, contract - paid);
+        const pct = contract > 0 ? Math.min(100, Math.round((paid / contract) * 100)) : (paid > 0 ? 100 : 0);
+
+        let statusBadge = '';
+        let barColor = '';
+        let stickLabel = '';
+
+        if (pct >= 100) {
+          statusBadge = '<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-2.5 py-0.5 rounded-full text-[10px] flex items-center gap-1"><i class="fa-solid fa-check"></i> LUNAS</span>';
+          barColor = 'bg-emerald-500';
+          stickLabel = '100% LUNAS';
+        } else if (pct > 0) {
+          statusBadge = '<span class="bg-amber-100 text-amber-800 border border-amber-300 font-bold px-2.5 py-0.5 rounded-full text-[10px] flex items-center gap-1"><i class="fa-solid fa-clock-rotate-left"></i> DP / DICICIL</span>';
+          barColor = 'bg-gradient-to-r from-amber-500 to-gold';
+          stickLabel = `${pct}% Terbayar`;
+        } else {
+          statusBadge = '<span class="bg-stone-100 text-stone-600 border border-stone-200 font-medium px-2.5 py-0.5 rounded-full text-[10px]">BELUM BAYAR</span>';
+          barColor = 'bg-stone-300';
+          stickLabel = '0% - Belum Ada Pembayaran';
+        }
+
+        const cleanContact = (v.contact || '').replace(/[^0-9]/g, '');
+        const waLink = cleanContact ? (cleanContact.startsWith('0') ? '62' + cleanContact.slice(1) : cleanContact) : '';
+
+        return `
+          <div class="bg-white rounded-3xl p-5 border border-stone-200/90 shadow-luxury hover:border-gold/50 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <span class="text-[10px] uppercase font-bold tracking-wider text-gold-dark bg-champagne/70 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
+                    ${v.category || 'Lainnya'}
+                  </span>
+                  <h3 class="font-serif text-lg font-bold text-charcoal leading-snug">${v.name}</h3>
+                  ${v.notes ? `<p class="text-xs text-stone-500 mt-1 italic">${v.notes}</p>` : ''}
+                </div>
+                <div class="shrink-0 flex items-center gap-1.5">
+                  ${statusBadge}
+                </div>
+              </div>
+
+              <!-- Contact & Pricing Meta -->
+              <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-stone-400 block font-medium">Estimasi Kontrak</span>
+                  <span class="font-serif text-base font-bold text-charcoal">${formatIDR(contract)}</span>
+                </div>
+                ${waLink ? `
+                  <a href="${'https:' + String.fromCharCode(47, 47) + 'wa.me/' + waLink}" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-[11px] flex items-center gap-1.5 transition">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>WhatsApp</span>
+                  </a>
+                ` : ''}
+              </div>
+
+              <!-- STIK PERSENTASE PEMBAYARAN VENDOR -->
+              <div class="mt-3.5 p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="font-semibold text-charcoal flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-simple text-gold-dark"></i>
+                    <span>Stik Persentase Pembayaran</span>
+                  </span>
+                  <span class="font-bold ${pct >= 100 ? 'text-emerald-700' : (pct > 0 ? 'text-amber-700' : 'text-stone-500')}">${stickLabel}</span>
+                </div>
+                <div class="w-full h-3.5 bg-stone-200 rounded-full overflow-hidden p-0.5">
+                  <div class="h-full rounded-full transition-all duration-700 ${barColor}" style="width: ${pct}%"></div>
+                </div>
+                <div class="flex justify-between items-center text-[11px] text-stone-600 mt-2">
+                  <span>Terbayar: <strong class="text-charcoal">${formatIDR(paid)}</strong></span>
+                  <span>Sisa: <strong class="${remaining > 0 ? 'text-rose-600' : 'text-emerald-600'}">${formatIDR(remaining)}</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons Footer -->
+            <div class="mt-4 pt-3.5 border-t border-stone-100 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5">
+                <button onclick="openVendorModal('${v.id}')" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center text-xs transition" title="Edit Vendor">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="deleteVendor('${v.id}')" class="w-8 h-8 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-600 hover:text-rose-600 flex items-center justify-center text-xs transition" title="Hapus Vendor">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+
+              ${remaining > 0 ? `
+                <button onclick="openVendorPayModal('${v.id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5 shadow">
+                  <i class="fa-solid fa-credit-card"></i>
+                  <span>Bayar DP / Cicilan</span>
+                </button>
+              ` : `
+                <span class="text-xs font-bold text-emerald-700 flex items-center gap-1">
+                  <i class="fa-solid fa-circle-check"></i> Lunas Sepenuhnya
+                </span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openVendorModal(id = null) {
+      document.getElementById('vendorForm').reset();
+      document.getElementById('vendorContractPreview').textContent = 'Rp 0';
+      if (id) {
+        const v = appState.vendors.find(item => item.id === id);
+        if (v) {
+          document.getElementById('vendorEditId').value = v.id;
+          document.getElementById('vendorModalTitle').textContent = 'Edit Data Vendor';
+          document.getElementById('vendorName').value = v.name;
+          document.getElementById('vendorCategory').value = v.category || 'Lainnya';
+          document.getElementById('vendorContact').value = v.contact || '';
+          document.getElementById('vendorContractAmount').value = v.contractAmount || 0;
+          document.getElementById('vendorNotes').value = v.notes || '';
+          updateVendorPreview();
+        }
+      } else {
+        document.getElementById('vendorEditId').value = '';
+        document.getElementById('vendorModalTitle').textContent = 'Tambah Vendor Baru';
+      }
+      document.getElementById('vendorModal').style.display = 'flex';
+    }
+
+    function closeVendorModal() {
+      document.getElementById('vendorModal').style.display = 'none';
+    }
+
+    function updateVendorPreview() {
+      const val = parseFloat(document.getElementById('vendorContractAmount').value) || 0;
+      document.getElementById('vendorContractPreview').textContent = formatIDR(val);
+    }
+
+    function saveVendor(e) {
+      e.preventDefault();
+      const editId = document.getElementById('vendorEditId').value;
+      const name = document.getElementById('vendorName').value.trim();
+      const category = document.getElementById('vendorCategory').value;
+      const contact = document.getElementById('vendorContact').value.trim();
+      const contractAmount = parseFloat(document.getElementById('vendorContractAmount').value) || 0;
+      const notes = document.getElementById('vendorNotes').value.trim();
+
+      if (editId) {
+        const idx = appState.vendors.findIndex(v => v.id === editId);
+        if (idx > -1) {
+          const old = appState.vendors[idx];
+          appState.vendors[idx] = {
+            ...old,
+            name, category, contact, contractAmount, notes
+          };
+          showToast('Vendor Diperbarui!', `${name} berhasil disimpan.`);
+        }
+      } else {
+        const newVendor = {
+          id: 'VND-' + Date.now(),
+          name, category, contact, contractAmount,
+          paidAmount: 0,
+          status: 'Belum Bayar',
+          notes
+        };
+        appState.vendors.unshift(newVendor);
+        showToast('Vendor Ditambahkan!', `${name} siap dipantau pembayarannya.`);
+      }
+
+      closeVendorModal();
+      saveOfflineState();
+      renderVendors();
+
+      const payload = editId ?
+        appState.vendors.find(v => v.id === editId) :
+        appState.vendors[0];
+      callBackend('apiSimpanVendor', payload).then(res => {
+        if (res && res.id && !editId) {
+          appState.vendors[0].id = res.id;
+          saveOfflineState();
+          renderVendors();
+        }
+      });
+    }
+
+    function deleteVendor(id) {
+      const v = appState.vendors.find(item => item.id === id);
+      const name = v ? v.name : 'Vendor';
+      if (!confirm(`Hapus vendor "${name}" dari daftar?`)) return;
+
+      appState.vendors = appState.vendors.filter(item => item.id !== id);
+      saveOfflineState();
+      renderVendors();
+      showToast('Vendor Dihapus', `${name} telah dihapus.`);
+      callBackend('apiHapusVendor', id);
+    }
+
+    /* --- VENDOR PAYMENT MODAL & LOGIC --- */
+    let currentPayingVendor = null;
+
+    function openVendorPayModal(vendorId) {
+      const v = appState.vendors.find(item => item.id === vendorId);
+      if (!v) return;
+
+      currentPayingVendor = v;
+      document.getElementById('vendorPayForm').reset();
+      document.getElementById('payModalVendorId').value = v.id;
+      document.getElementById('payModalVendorName').textContent = v.name;
+      document.getElementById('payModalCategoryBadge').textContent = v.category || 'Lainnya';
+
+      const contract = Number(v.contractAmount) || 0;
+      const paid = Number(v.paidAmount) || 0;
+      const remaining = Math.max(0, contract - paid);
+
+      document.getElementById('payModalContract').textContent = formatIDR(contract);
+      document.getElementById('payModalPaid').textContent = formatIDR(paid);
+      document.getElementById('payModalRemaining').textContent = formatIDR(remaining);
+
+      document.getElementById('payModalDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('payModalType').value = paid === 0 ? 'DP (Down Payment)' : (remaining <= 0 ? 'Pelunasan' : 'Cicilan Ke-1');
+      document.getElementById('payModalAmount').value = '';
+      document.getElementById('payModalAmountPreview').textContent = 'Rp 0';
+      document.getElementById('vendorPayModal').style.display = 'flex';
+    }
+
+    function closeVendorPayModal() {
+      document.getElementById('vendorPayModal').style.display = 'none';
+      currentPayingVendor = null;
+    }
+
+    function updatePayModalPreview() {
+      const val = parseFloat(document.getElementById('payModalAmount').value) || 0;
+      document.getElementById('payModalAmountPreview').textContent = formatIDR(val);
+    }
+
+    function setPayQuickAmount(opt) {
+      if (!currentPayingVendor) return;
+      const contract = Number(currentPayingVendor.contractAmount) || 0;
+      const paid = Number(currentPayingVendor.paidAmount) || 0;
+      const remaining = Math.max(0, contract - paid);
+
+      const input = document.getElementById('payModalAmount');
+      if (opt === 'full') {
+        input.value = remaining;
+      } else if (opt === 'half') {
+        input.value = Math.round(remaining / 2);
+      } else if (typeof opt === 'number') {
+        const cur = parseFloat(input.value) || 0;
+        input.value = cur + opt;
+      }
+      updatePayModalPreview();
+    }
+
+    function submitVendorPayment(e) {
+      e.preventDefault();
+      const vendorId = document.getElementById('payModalVendorId').value;
+      const amount = parseFloat(document.getElementById('payModalAmount').value) || 0;
+      const payType = document.getElementById('payModalType').value;
+      const date = document.getElementById('payModalDate').value;
+      const notes = document.getElementById('payModalNotes').value.trim();
+
+      if (amount <= 0) {
+        alert('Nominal pembayaran harus lebih dari 0.');
+        return;
+      }
+
+      const v = appState.vendors.find(item => item.id === vendorId);
+      if (!v) return;
+
+      /* 1. Update Vendor Paid Amount */
+      v.paidAmount = (Number(v.paidAmount) || 0) + amount;
+      if (v.paidAmount >= v.contractAmount && v.contractAmount > 0) {
+        v.status = 'Lunas';
+      } else if (v.paidAmount > 0) {
+        v.status = 'DP / Dicicil';
+      }
+
+      /* 2. Auto-record Expense Transaction to Cash Book */
+      const newTx = {
+        id: 'TX-' + Date.now(),
+        type: 'expense',
+        title: `Pembayaran ${v.name} (${payType})`,
+        amount: amount,
+        category: v.category || 'Venue & Katering',
+        status: payType,
+        date: date,
+        notes: notes || `Pembayaran vendor ${v.name}`
+      };
+      appState.transactions.unshift(newTx);
+
+      /* 3. Re-render UI with Animation & Save to Offline Cache */
+      closeVendorPayModal();
+      saveOfflineState();
+      renderVendors();
+      renderFinancialSummary();
+      renderTransactions();
+      showToast('Pembayaran Tercatat!', `Stik persentase ${v.name} telah diperbarui & pengeluaran kas dicatat.`);
+
+      /* 4. Sync with Backend via Universal Dual-Bridge */
+      callBackend('apiBayarVendor', {
+        vendorId: vendorId,
+        amount: amount,
+        paymentType: payType,
+        date: date,
+        notes: notes
+      }).then(res => {
+        if (res && res.success && res.transaction) {
+          newTx.id = res.transaction.id;
+          saveOfflineState();
+        }
+      });
+    }
+
+    /* --- 8. COUPLE PROFILE & TARGET MODAL --- */
+    function openCoupleModal() {
+      document.getElementById('setCoupleName').value = appState.coupleName;
+      document.getElementById('setWeddingDate').value = appState.weddingDate;
+      document.getElementById('setTargetBudget').value = appState.targetBudget;
+      document.getElementById('coupleModal').style.display = 'flex';
+    }
+
+    function closeCoupleModal() {
+      document.getElementById('coupleModal').style.display = 'none';
+    }
+
+    function saveCoupleSettings(e) {
+      e.preventDefault();
+      appState.coupleName = document.getElementById('setCoupleName').value.trim();
+      appState.weddingDate = document.getElementById('setWeddingDate').value;
+      appState.targetBudget = parseFloat(document.getElementById('setTargetBudget').value) || 250000000;
+      closeCoupleModal();
+      saveOfflineState();
+      renderAll();
+      showToast('Pengaturan Disimpan!', 'Profil pasangan dan target anggaran telah diperbarui.');
+      callBackend('apiSimpanPengaturan', {
+        coupleName: appState.coupleName,
+        weddingDate: appState.weddingDate,
+        targetBudget: appState.targetBudget
+      });
+    }
+
+    /* --- 9. PERLENGKAPAN BERKAS NIKAH KUA --- */
+    const defaultKuaDocs = [
+      { id: 'kua-1', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Surat Pengantar RT & RW', desc: 'Surat pengantar nikah dari pengurus RT & RW domisili calon mempelai pria.', done: false },
+      { id: 'kua-2', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Formulir N1, N2, & N4 Kelurahan', desc: 'Surat pengantar nikah, permohonan kehendak nikah, dan persetujuan dari kantor Kelurahan/Desa.', done: false },
+      { id: 'kua-3', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Surat Rekomendasi Nikah KUA', desc: 'Wajib dari KUA asal jika akad nikah diselenggarakan di luar kecamatan domisili CPP.', done: false },
+      { id: 'kua-4', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Fotokopi KTP, KK, & Akta Kelahiran', desc: 'Disiapkan masing-masing 2 lembar fotokopi beserta dokumen asli saat verifikasi.', done: false },
+      { id: 'kua-5', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Pas Foto 2x3 (4 lbr) & 4x6 (2 lbr)', desc: 'Background warna biru polos, berbusana kemeja rapi / berjas.', done: false },
+      { id: 'kua-6', cat: 'cpp', role: 'Calon Suami (CPP)', title: 'Sertifikat Skrining Catin (Elsimil)', desc: 'Surat bebas anemia dan bukti pemeriksaan kesehatan calon pengantin dari Puskesmas.', done: false },
+
+      { id: 'kua-7', cat: 'cpw', role: 'Calon Istri (CPW)', title: 'Surat Pengantar RT & RW', desc: 'Surat pengantar nikah dari RT & RW domisili calon mempelai wanita.', done: false },
+      { id: 'kua-8', cat: 'cpw', role: 'Calon Istri (CPW)', title: 'Formulir N1, N2, & N4 Kelurahan', desc: 'Surat keterangan nikah resmi dari kantor Kelurahan domisili calon istri.', done: false },
+      { id: 'kua-9', cat: 'cpw', role: 'Calon Istri (CPW)', title: 'Surat Imunisasi TT & Catin Puskesmas', desc: 'Bukti imunisasi Tetanus Toxoid dan sertifikat Elsimil Puskesmas.', done: false },
+      { id: 'kua-10', cat: 'cpw', role: 'Calon Istri (CPW)', title: 'Fotokopi KTP, KK, & Akta Kelahiran', desc: 'Disiapkan fotokopi rangkap 2 beserta fotokopi ijazah terakhir.', done: false },
+      { id: 'kua-11', cat: 'cpw', role: 'Calon Istri (CPW)', title: 'Pas Foto 2x3 (4 lbr) & 4x6 (2 lbr)', desc: 'Background warna biru polos, berbusana sopan / jilbab rapi.', done: false },
+
+      { id: 'kua-12', cat: 'wali', role: 'Wali & Saksi', title: 'Fotokopi KTP & KK Wali Nikah', desc: 'Identitas wali nikah nasab (Ayah kandung atau pengganti yang sah).', done: false },
+      { id: 'kua-13', cat: 'wali', role: 'Wali & Saksi', title: 'Fotokopi KTP 2 Orang Saksi Nikah', desc: 'Identitas 2 saksi akad nikah (pria muslim, dewasa, berakal).', done: false },
+      { id: 'kua-14', cat: 'wali', role: 'Wali & Saksi', title: 'Fotokopi Buku Nikah Orang Tua CPW', desc: 'Dibutuhkan petugas KUA untuk verifikasi keabsahan silsilah wali nasab.', done: false }
+    ];
+
+    function initKuaDocs() {
+      try {
+        const saved = localStorage.getItem('aurelia_kua_docs');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === defaultKuaDocs.length) {
+            appState.kuaDocs = parsed;
+            return;
+          }
+        }
+      } catch (e) { }
+      appState.kuaDocs = defaultKuaDocs.map(d => ({ ...d }));
+    }
+
+    function saveKuaDocs() {
+      try {
+        localStorage.setItem('aurelia_kua_docs', JSON.stringify(appState.kuaDocs));
+      } catch (e) { }
+      callBackend('apiSaveKuaDocs', appState.kuaDocs);
+    }
+
+    function filterKuaDocs(cat) {
+      appState.kuaFilter = cat;
+      ['all', 'cpp', 'cpw', 'wali'].forEach(c => {
+        const btn = document.getElementById('kua-flt-' + c);
+        if (!btn) return;
+        if (c === cat) {
+          btn.className = 'kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-charcoal text-white shadow transition flex items-center gap-2';
+        } else {
+          btn.className = 'kua-filter shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-200 hover:border-gold transition flex items-center gap-2';
+        }
+      });
+      renderKuaDocs();
+    }
+
+    function toggleKuaDoc(id) {
+      const doc = appState.kuaDocs.find(d => d.id === id);
+      if (doc) {
+        doc.done = !doc.done;
+        saveKuaDocs();
+        renderKuaDocs();
+        showToast(doc.done ? 'Berkas Siap!' : 'Status Diperbarui', doc.title);
+      }
+    }
+
+    function renderKuaDocs() {
+      const listEl = document.getElementById('kuaDocsList');
+      if (!listEl) return;
+
+      const total = appState.kuaDocs.length;
+      const readyCount = appState.kuaDocs.filter(d => d.done).length;
+      const pct = total > 0 ? Math.round((readyCount / total) * 100) : 0;
+
+      const readyEl = document.getElementById('kuaCountReady');
+      if (readyEl) readyEl.textContent = readyCount;
+      const totalEl = document.getElementById('kuaCountTotal');
+      if (totalEl) totalEl.textContent = total;
+      const pctEl = document.getElementById('kuaPercent');
+      if (pctEl) pctEl.textContent = `${pct}%`;
+      const barEl = document.getElementById('kuaProgressBar');
+      if (barEl) barEl.style.width = `${pct}%`;
+      const badgeEl = document.getElementById('deskKuaBadge');
+      if (badgeEl) badgeEl.textContent = `${pct}%`;
+
+      const filtered = appState.kuaDocs.filter(d => {
+        return appState.kuaFilter === 'all' || d.cat === appState.kuaFilter;
+      });
+
+      const roleBadges = {
+        cpp: 'bg-blue-50 text-blue-700 border-blue-200',
+        cpw: 'bg-pink-50 text-pink-700 border-pink-200',
+        wali: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+      };
+
+      listEl.innerHTML = filtered.map(item => `
+                <div class="p-4 rounded-2xl bg-white border ${item.done ? 'border-emerald-500/60 bg-emerald-50/20' : 'border-stone-200/80'} shadow-sm transition flex items-start gap-3.5">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleKuaDoc('${item.id}')" class="mt-1 accent-gold w-5 h-5 rounded cursor-pointer shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${roleBadges[item.cat] || 'bg-stone-100 text-stone-600'}">
+                                ${item.role}
+                            </span>
+                            ${item.done ? '<span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1"><i class="fa-solid fa-check"></i> Siap</span>' : ''}
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold ${item.done ? 'line-through text-stone-400' : 'text-charcoal'}">${item.title}</h4>
+                        <p class="text-[11px] text-stone-500 mt-1 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    function copyKuaDocsWhatsApp() {
+      const readyCount = appState.kuaDocs.filter(d => d.done).length;
+      const total = appState.kuaDocs.length;
+      const pct = Math.round((readyCount / total) * 100);
+
+      const lines = [
+        `*CHECKLIST BERKAS PERNIKAHAN KUA*`,
+        `Pasangan: ${appState.coupleName || 'Calon Pengantin'}`,
+        `Status Kelengkapan: ${readyCount}/${total} Berkas Siap (${pct}%)`,
+        `----------------------------------------`,
+        `*MEMPELAI PRIA (CPP):*`
+      ];
+
+      appState.kuaDocs.filter(d => d.cat === 'cpp').forEach(d => {
+        lines.push(`${d.done ? '✅' : '⬜'} ${d.title}`);
+      });
+
+      lines.push(``, `*MEMPELAI WANITA (CPW):*`);
+      appState.kuaDocs.filter(d => d.cat === 'cpw').forEach(d => {
+        lines.push(`${d.done ? '✅' : '⬜'} ${d.title}`);
+      });
+
+      lines.push(``, `*WALI & SAKSI:*`);
+      appState.kuaDocs.filter(d => d.cat === 'wali').forEach(d => {
+        lines.push(`${d.done ? '✅' : '⬜'} ${d.title}`);
+      });
+
+      lines.push(
+        `----------------------------------------`,
+        `_Catatan: Pendaftaran KUA maksimal H-10 hari kerja. Biaya di kantor KUA Rp 0 (Gratis) / di luar kantor Rp 600.000 via Bank._`
+      );
+
+      const text = lines.join('\n');
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+
+      showToast('Checklist Berkas Tersalin!', 'Daftar berkas KUA siap dikirim via WhatsApp ke pasangan.');
+    }
+
+    /* Expose functions globally on window for inline handlers in sandboxed iframes */
+    window.switchTab = switchTab;
+    window.openTransactionModal = openTransactionModal;
+    window.closeTransactionModal = closeTransactionModal;
+    window.setModalTxType = setModalTxType;
+    window.updateAmountPreview = updateAmountPreview;
+    window.setQuickAmount = setQuickAmount;
+    window.saveTransaction = saveTransaction;
+    window.filterTransactions = filterTransactions;
+    window.renderTransactions = renderTransactions;
+    window.editTransaction = editTransaction;
+    window.deleteTransaction = deleteTransaction;
+    window.copyFinancialReport = copyFinancialReport;
+    window.renderChecklist = renderChecklist;
+    window.toggleChecklist = toggleChecklist;
+    window.addChecklistTask = addChecklistTask;
+    window.deleteChecklist = deleteChecklist;
+    window.filterVendors = filterVendors;
+    window.renderVendors = renderVendors;
+    window.openVendorModal = openVendorModal;
+    window.closeVendorModal = closeVendorModal;
+    window.updateVendorPreview = updateVendorPreview;
+    window.saveVendor = saveVendor;
+    window.deleteVendor = deleteVendor;
+    window.openVendorPayModal = openVendorPayModal;
+    window.closeVendorPayModal = closeVendorPayModal;
+    window.updatePayModalPreview = updatePayModalPreview;
+    window.setPayQuickAmount = setPayQuickAmount;
+    window.submitVendorPayment = submitVendorPayment;
+    window.openCoupleModal = openCoupleModal;
+    window.closeCoupleModal = closeCoupleModal;
+    window.saveCoupleSettings = saveCoupleSettings;
+    window.filterKuaDocs = filterKuaDocs;
+    window.toggleKuaDoc = toggleKuaDoc;
+    window.copyKuaDocsWhatsApp = copyKuaDocsWhatsApp;
+    window.showToast = showToast;
+    window.callBackend = callBackend;
+    window.saveOfflineState = saveOfflineState;
+    window.loadOfflineState = loadOfflineState;
+
+    /* Initialize App on Load (Dual Bridge GAS + Standalone PWA) */
+    async function initApp() {
+      /* Bind navigation listeners programmatically as resilient backup to inline onclick */
+      ['dashboard', 'keuangan', 'vendor', 'checklist', 'berkas'].forEach(tab => {
+        const deskBtn = document.getElementById('desk-nav-' + tab);
+        if (deskBtn) deskBtn.addEventListener('click', () => switchTab(tab));
+        const mobBtn = document.getElementById('mob-nav-' + tab);
+        if (mobBtn) mobBtn.addEventListener('click', () => switchTab(tab));
+      });
+
+      /* 1. Fast Load from Offline Cache for instant 0ms render */
+      loadOfflineState();
+      initKuaDocs();
+      renderKuaDocs();
+      renderAll();
+
+      /* 2. Register Service Worker if running standalone over HTTPS */
+      try {
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:' && !window.location.host.includes('googleusercontent.com')) {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        }
+      } catch (e) {}
+
+      /* 3. Universal Sync via Dual-Bridge callBackend */
+      try {
+        const serverData = await callBackend('getInitialData');
+        if (serverData) {
+          if (serverData.coupleName) appState.coupleName = serverData.coupleName;
+          if (serverData.weddingDate) appState.weddingDate = serverData.weddingDate;
+          if (serverData.targetBudget) appState.targetBudget = serverData.targetBudget;
+          if (serverData.transactions && serverData.transactions.length > 0) {
+            appState.transactions = serverData.transactions;
+          }
+          if (serverData.checklist && serverData.checklist.length > 0) {
+            appState.checklist = serverData.checklist;
+          }
+          if (serverData.vendors && serverData.vendors.length > 0) {
+            appState.vendors = serverData.vendors;
+          }
+          if (serverData.kuaDocs && serverData.kuaDocs.length > 0) {
+            appState.kuaDocs = serverData.kuaDocs;
+            renderKuaDocs();
+          }
+          saveOfflineState();
+          renderAll();
+        }
+      } catch (err) {
+        console.warn('Initial data sync fallback to offline cache:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+</body>
+
+</html>
